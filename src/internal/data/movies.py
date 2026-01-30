@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, PositiveInt
+from pydantic import BaseModel, PositiveInt, field_serializer
 
 
 class Movie(BaseModel):
@@ -13,6 +13,10 @@ class Movie(BaseModel):
     version: (
         PositiveInt  # incremental integer updated every time the movie data is updated
     )
+
+    @field_serializer("runtime")  # this works even when runtime is none
+    def serialize_runtime(self, runtime: int) -> str:
+        return f"{runtime} mins"
 
 
 # these response models contrast the wrapper function used to accomplish the same task in chapter 3.04
