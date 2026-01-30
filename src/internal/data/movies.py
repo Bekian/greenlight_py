@@ -15,6 +15,17 @@ class Movie(BaseModel):
     )
 
 
+# these response models contrast the wrapper function used to accomplish the same task in chapter 3.04
+# this approach is more intentional and explicit with how wrappers are declared, so we'll be using this approach instead
+class MovieResponse(BaseModel):
+    movie: Movie  # a single movie
+
+
+class MoviesResponse(BaseModel):
+    movie: list[Movie]  # a list of movies
+    metadata: dict  # e.g. pagination info
+
+
 """
 note from the book about why using private vs json struct tags is better:
 Note: You can also prevent a struct field from appearing in the JSON output by simply making it unexported.

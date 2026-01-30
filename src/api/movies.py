@@ -2,7 +2,7 @@ import datetime
 
 from fastapi import APIRouter, HTTPException
 
-from src.internal.data.movies import Movie
+from src.internal.data.movies import Movie, MovieResponse
 
 router = APIRouter(prefix="/v1py/movies", tags=["movies"])
 
@@ -20,12 +20,12 @@ async def get_movies(id: int):
             detail="Invalid ID provided, only positive integers allowed.",
         )
 
-    # also do if int_id not in movies catch to return a 404
+    # also do if int_id not in movies[] catch to return a 404
 
     # dummy movie value
     movie = Movie(
         id=id,
-        created_at=datetime.datetime.now(),
+        _created_at=datetime.datetime.now(),
         title="Casablanca",
         runtime=102,
         year=None,  # this will be updated
@@ -33,4 +33,4 @@ async def get_movies(id: int):
         version=1,
     )
 
-    return movie.model_dump(exclude_none=True)
+    return MovieResponse(movie=movie).model_dump(exclude_none=True)
