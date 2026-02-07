@@ -3,7 +3,9 @@ from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
+from src.api.errors import general_exception_handler, http_exception_handler
 from src.internal.dependency import get_config, get_logger
 
 from . import healthcheck, movies
@@ -28,6 +30,12 @@ async def lifespan(app: FastAPI):
 
 # add the lifecycle wrapper to the fastapi app
 app = FastAPI(lifespan=lifespan)
+# the "fastapi way" is to use a decorator but i prefer this method, and its closer to what the book does
+# also passing the app instance around is not ideal
+app.add_exception_handler(StarletteHTTPException, http_exception_handler)
+# this replaces the `recoverPanic` handler from the book
+app.add_exception_handler(Exception, general_exception_handler)
+
 app.include_router(movies.router)
 app.include_router(healthcheck.router)
 
