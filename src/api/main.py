@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from src.api.errors import general_exception_handler, http_exception_handler
+from src.api.middleware import RateLimitSizeMiddleware
 from src.internal.dependency import get_config, get_logger
 
 from . import healthcheck, movies
@@ -35,6 +36,8 @@ app = FastAPI(lifespan=lifespan)
 app.add_exception_handler(StarletteHTTPException, http_exception_handler)
 # this replaces the `recoverPanic` handler from the book
 app.add_exception_handler(Exception, general_exception_handler)
+
+app.add_middleware(RateLimitSizeMiddleware, max_bytes=1_048_576)
 
 app.include_router(movies.router)
 app.include_router(healthcheck.router)
