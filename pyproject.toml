@@ -1,13 +1,13 @@
 [project]
 name = "greenlight-py"
 version = "0.1.0"
-description = "Add your description here"
+description = "Python version of the greenlight api, from the lets-go-further book by Alex Edwards"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "asyncpg>=0.31.0",
     "fastapi>=0.128.0",
     "httpx>=0.28.1",
-    "matplotlib>=3.10.8",
     "orjson>=3.11.6",
     "pydantic-settings>=2.12.0",
     "python-dotenv>=1.2.1",

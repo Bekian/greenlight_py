@@ -1,6 +1,7 @@
 import asyncio
 from contextlib import asynccontextmanager
 
+import asyncpg
 import uvicorn
 from fastapi import FastAPI
 from starlette.exceptions import HTTPException as StarletteHTTPException
@@ -19,14 +20,26 @@ async def lifespan(app: FastAPI):
     app_config = get_config()
     # startup log message
     app_logger.info(
-        "starting server", extra={"addr": app_config.port, "env": app_config.env}
+        "Starting server.", extra={"addr": app_config.port, "env": app_config.env}
     )
+    app_logger.info("Initializing database connection.")
+    app.state.db = await asyncpg.create_pool(
+        dsn=app_config.dsn,
+        min_size=5,
+        max_size=25,
+        max_queries=50000,
+        max_inactive_connection_lifetime=300.0,
+    )
+    app_logger.info("Database connection initialized.")
 
     # run the app
     yield
 
+    app_logger.info("Closing database connection.")
+    await app.state.db.close()
+    app_logger.info("Database connection closed.")
     # graceful shutdown
-    app_logger.info("shutting down server")
+    app_logger.info("Shutting down server.")
 
 
 # add the lifecycle wrapper to the fastapi app

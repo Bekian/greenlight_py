@@ -16,7 +16,7 @@ class MovieCreate(BaseModel):  # fields are described @ src.internal.data.movies
     title: str = Field(..., min_length=1, max_length=500)
     year: PositiveInt | None = Field(..., gt=1888)
     runtime: PositiveInt | None = Field(..., gt=0)
-    genres: list[str] | None = Field(..., gt=0)
+    genres: set[str] | None = Field(..., min_length=1)
 
 
 @router.post("")
